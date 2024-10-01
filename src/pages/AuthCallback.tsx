@@ -2,12 +2,12 @@ import {
   getDefaultSession,
   handleIncomingRedirect,
 } from "@inrupt/solid-client-authn-browser";
-import { useEffect } from "react";
-import { useAuth } from "../hooks/useAuth";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function AuthCallback() {
-  const { onCallback } = useAuth();
+  const { onCallback } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -1,7 +1,10 @@
-import { PodSpaces, useAuth } from "./hooks/useAuth";
+import { useContext } from "react";
+import UserPage from "./components/UserPage";
+import { PodSpaces } from "./hooks/useAuth";
+import { AuthContext } from "./context/AuthContext";
 
 function App() {
-  const { user, signIn, signOut } = useAuth();
+  const { user, signIn } = useContext(AuthContext);
 
   if (!user)
     return (
@@ -11,8 +14,7 @@ function App() {
   return (
     <div>
       <h1>Seecure Player Data - React + Solid Protocol</h1>
-      <p>Welcome: {user.webID}</p>
-      <button onClick={signOut}>Sign out</button>
+      <UserPage />
     </div>
   );
 }
