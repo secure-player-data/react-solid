@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import UserPage from "./components/UserPage";
-import { PodSpaces } from "./hooks/useAuth";
-import { AuthContext } from "./context/AuthContext";
+import { AuthContext, PodSpaces } from "./context/AuthContext";
 
 function App() {
   const { user, signIn } = useContext(AuthContext);
