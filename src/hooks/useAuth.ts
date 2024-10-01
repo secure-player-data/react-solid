@@ -1,28 +1,56 @@
 import { useEffect, useState } from "react";
-import { login } from "@inrupt/solid-client-authn-browser";
+import { login, logout } from "@inrupt/solid-client-authn-browser";
 
 export type User = {
   webID: string;
+  sessionId: string;
+  clientId: string;
 };
 
+export type Provider = {
+  label: string;
+  issuer: string;
+};
+
+export const PodSpaces = {
+  label: "PodSpaces",
+  issuer: "https://login.inrupt.com",
+} as Provider;
+
+const LOCAL_STORAGE_KEY = "user";
+
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, _setUser] = useState<User | null>(null);
 
   // Initialize user from local storage
   useEffect(() => {
-    const webID = localStorage.getItem("webID");
-    if (webID) {
-      setUser({ webID });
+    const user = localStorage.getItem(LOCAL_STORAGE_KEY);
+    console.log(`User init from ${window.location.href}:`, user);
+    if (user) {
+      _setUser(JSON.parse(user));
     }
   }, []);
 
-  const signIn = () => {
-    throw new Error("Not implemented");
+  const onCallback = (user: User) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(user));
+    _setUser(user);
+  };
+
+  const signIn = (provider: Provider) => {
+    login({
+      oidcIssuer: provider.issuer,
+      redirectUrl: new URL("/auth/callback", window.location.href).toString(),
+      clientName: "Secure Player Data",
+    });
   };
 
   const signOut = () => {
-    throw new Error("Not implemented");
+    logout({
+      logoutType: "app",
+    });
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    _setUser(null);
   };
 
-  return { user, signIn, signOut };
+  return { user, signIn, signOut, onCallback };
 };
